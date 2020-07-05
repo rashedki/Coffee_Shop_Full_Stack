@@ -16,7 +16,12 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-# db_drop_and_create_all()
+
+@app.route('/')
+def index():
+    return jsonify({'message': 'hellow-world'})
+
+db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -28,6 +33,17 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks', methods=['GET'])
+def get_drinks():
+    drinks = Drink.query.all()
+
+    drinks_list = []
+    for drink in drinks:
+        drinks_list.append(drink.short())
+    return jsonify({
+        'success' : True,
+        'drinks' : drinks_list,
+    }), 200
 
 '''
 @TODO implement endpoint
@@ -38,6 +54,17 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks-detail', methods=['GET'])
+@requires_auth('get:drinks-detail')
+def get_drinks_detail(jwt):
+    drinks = Drink.query.all()
+    drinks_list = []
+    for drink in drinks:
+        drinksArr.append(drink.long())
+    return jsonify({
+                    'success': True,
+                    'drinks': drinks_list
+                    }), 200
 
 '''
 @TODO implement endpoint
@@ -49,6 +76,24 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def post_drinks(jwt):
+    data = request.get_json()
+    if 'title' and 'recipe' not in data:
+        abort(422)
+        
+    title = data['title']
+    recipe = data['recipe']
+
+    recipeJSON = getJSONListFromObject(recipe)
+
+    drink = Drink(title=title, recipe=recipeJSON)
+    drink.insert()
+        
+
+    return jsonify({'success': True,
+                    'drinks':drink.long()})
 
 '''
 @TODO implement endpoint
@@ -62,6 +107,26 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks/<id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
+def patch_drinks(jwt, id):
+    drink = Drink.query.get(id)
+    if drink is None:
+        abort(404)
+    
+    data = request.get_json()
+    if "title" in data:
+        drink.title = data['title']
+
+    if "recipe" in data:
+        recipe = data['recipe']
+        recipeJSON = getJSONListFromObject(recipe)
+    
+        drink.recipe = recipeJSON
+    
+    drink.update()
+    return jsonify({'success': True,
+                    'drinks':drink.long()})
 
 '''
 @TODO implement endpoint
@@ -74,6 +139,18 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks/<id>', methods=['DELETE'])
+@requires_auth('delete:drinks')
+def delete_drinks(jwt, id):
+    drink = Drink.query.get(id)
+    if drink is None:
+        abort(404)
+    
+    id = drink.id
+    
+    drink.delete()
+    return jsonify({'success': True,
+                    'delete': id})
 
 ## Error Handling
 '''

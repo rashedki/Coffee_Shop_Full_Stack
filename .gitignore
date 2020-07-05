@@ -1,3 +1,5 @@
 
 env
 .vscode/settings.json
+backend/src/__pycache__/
+*.pyc
