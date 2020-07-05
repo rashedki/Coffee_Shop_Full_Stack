@@ -60,7 +60,7 @@ def get_drinks_detail(jwt):
     drinks = Drink.query.all()
     drinks_list = []
     for drink in drinks:
-        drinksArr.append(drink.long())
+        drinks_list.append(drink.long())
     return jsonify({
                     'success': True,
                     'drinks': drinks_list
@@ -151,6 +151,11 @@ def delete_drinks(jwt, id):
     drink.delete()
     return jsonify({'success': True,
                     'delete': id})
+
+
+@app.route('/login-results', methods=['GET'])
+def login_results():
+    return (jsonify({'message': 'successful login'}))
 
 ## Error Handling
 '''
