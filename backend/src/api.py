@@ -57,14 +57,17 @@ def get_drinks():
 @app.route('/drinks-detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(jwt):
-    drinks = Drink.query.all()
-    drinks_list = []
-    for drink in drinks:
-        drinks_list.append(drink.long())
-    return jsonify({
-                    'success': True,
-                    'drinks': drinks_list
-                    }), 200
+    try:
+        drinks = Drink.query.all()
+        drinks_list = []
+        for drink in drinks:
+            drinks_list.append(drink.long())
+        return jsonify({
+            'success': True,
+            'drinks': drinks_list
+        }), 200
+    except:
+        abort(401)
 
 '''
 @TODO implement endpoint
@@ -164,10 +167,10 @@ Example error handling for unprocessable entity
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
-                    "success": False, 
-                    "error": 422,
-                    "message": "unprocessable"
-                    }), 422
+        "success": False, 
+        "error": 422,
+        "message": "unprocessable"
+    }), 422
 
 '''
 @TODO implement error handlers using the @app.errorhandler(error) decorator
@@ -185,8 +188,32 @@ def unprocessable(error):
     error handler should conform to general task above 
 '''
 
+@app.errorhandler(404)
+def unprocessable(error):
+    return jsonify({
+        "success": False, 
+        "error": 404,
+        "message": "resource not found"
+    }), 404
+
 
 '''
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
 '''
+
+@app.errorhandler(AuthError)
+def auth_error(auth_error):
+    return jsonify({
+        "success": False, 
+        "error": auth_error.status_code,
+        "message": auth_error.error['description']
+    }), auth_error.status_code
+
+def getJSONListFromObject(obj):
+    if not isinstance(obj, list):
+        obj = [obj]
+    
+    jsonList = json.dumps(obj)
+
+    return jsonList
