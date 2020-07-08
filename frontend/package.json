@@ -29,6 +29,7 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.15",
     "rxjs": "^6.5.5",
+    "rxjs-compat": "^6.6.0",
     "tslib": "^1.13.0",
     "zone.js": "~0.10.3"
   },
@@ -42,6 +43,7 @@
     "@angular/compiler-cli": "^10.0.2",
     "@angular/language-service": "^10.0.2",
     "@ionic/angular-toolkit": "^2.2.0",
+    "@schematics/angular": "^10.0.1",
     "@types/jasmine": "^2.8.17",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.0.12",
