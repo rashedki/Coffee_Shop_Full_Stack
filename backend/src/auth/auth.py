@@ -101,7 +101,7 @@ def verify_decode_jwt(token):
     if 'kid' not in unverified_header:
         raise AuthError({
             'code': 'invalid_header',
-            'description': 'Authorization malformed.'
+            'description': 'Missing kid.'
         }, 401)
 
     for key in jwks['keys']:
@@ -159,17 +159,17 @@ def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            token = get_token_auth_header()
-            try:
-                payload = verify_decode_jwt(token)               
-            except:
-                raise AuthError({
-                'code': 'invalid_payload',
-                'description': 'You are not authorized to browse this page'
-            }, 401)
             
-            check_permissions(permission, payload)
-            return f(payload, *args, **kwargs)
+            # try:
+                token = get_token_auth_header()
+                payload = verify_decode_jwt(token)
+                check_permissions(permission, payload)
+                return f(payload, *args, **kwargs)              
+            # except:
+            #     raise AuthError({
+            #     'code': 'invalid_payload',
+            #     'description': 'You are not authorized to browse this page'
+            # }, 401)          
 
         return wrapper
     return requires_auth_decorator
