@@ -3,3 +3,4 @@ env
 .vscode/settings.json
 backend/src/__pycache__/
 *.pyc
+env 7.01.17 PM/

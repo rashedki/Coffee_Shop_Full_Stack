@@ -1,0 +1,16 @@
+{
+  "drinks": [
+    {
+      "id": 1, 
+      "recipe": [
+        {
+          "color": "blue", 
+          "name": "Blue", 
+          "parts": 1
+        }
+      ], 
+      "title": "Water2"
+    }
+  ], 
+  "success": true
+}
