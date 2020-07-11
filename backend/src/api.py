@@ -127,9 +127,10 @@ def patch_drinks(jwt, id):
     
         drink.recipe = recipeJSON
     
-    drink.update()
-    return jsonify({'success': True,
-                    'drinks':drink.long()})
+    return jsonify({
+            'success': True,
+            'drinks': [drink.long()]
+        })
 
 '''
 @TODO implement endpoint
